@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { GitBranch, Loader2, FileText, Code, Folder, CheckCircle2, Copy } from "lucide-react";
+import { GitBranch, Loader2, FileText, Code, Folder, CheckCircle2, Copy, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -24,6 +24,7 @@ export default function RepositoryIndexer() {
   const [accessToken, setAccessToken] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<IndexResult | null>(null);
+  const [hasError, setHasError] = useState(false);
   const { toast } = useToast();
 
   const handleIndex = async () => {
@@ -38,6 +39,7 @@ export default function RepositoryIndexer() {
 
     setIsLoading(true);
     setResult(null);
+    setHasError(false);
     
     try {
       const { data, error } = await supabase.functions.invoke("index-repository", {
@@ -59,6 +61,7 @@ export default function RepositoryIndexer() {
       });
     } catch (error) {
       console.error("Error indexing repository:", error);
+      setHasError(true);
       toast({
         title: "Failed to index repository",
         description: error instanceof Error ? error.message : "An unexpected error occurred",
@@ -128,24 +131,36 @@ export default function RepositoryIndexer() {
                   Required for private repositories. Token is not stored.
                 </p>
               </div>
-              <Button
-                onClick={handleIndex}
-                disabled={isLoading}
-                className="w-full"
-                variant="glow"
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Analyzing Repository...
-                  </>
-                ) : (
-                  <>
-                    <GitBranch className="h-4 w-4" />
-                    Index Repository
-                  </>
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleIndex}
+                  disabled={isLoading}
+                  className="flex-1"
+                  variant="glow"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Analyzing Repository...
+                    </>
+                  ) : (
+                    <>
+                      <GitBranch className="h-4 w-4" />
+                      Index Repository
+                    </>
+                  )}
+                </Button>
+                {hasError && !isLoading && (
+                  <Button
+                    onClick={handleIndex}
+                    variant="outline"
+                    className="shrink-0"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    Retry
+                  </Button>
                 )}
-              </Button>
+              </div>
             </CardContent>
           </Card>
 
