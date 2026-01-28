@@ -173,8 +173,14 @@ export default function MergeReview() {
   const sendTelegramNotification = async (reviewData: ReviewResult) => {
     setIsSendingTelegram(true);
     try {
-      const { error } = await supabase.functions.invoke("send-telegram-notification", {
-        body: {
+      const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
+      
+      const response = await fetch(`${backendUrl}/api/send-telegram-notification`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
           mrTitle: reviewData.mrTitle,
           mrUrl: mrUrl,
           author: reviewData.author,
@@ -185,11 +191,12 @@ export default function MergeReview() {
           status: reviewData.status,
           issues: reviewData.issues,
           summary: reviewData.summary,
-        },
+        }),
       });
+       const result = await response.json();
 
-      if (error) {
-        throw new Error(error.message || "Failed to send Telegram notification");
+      if (!response.ok) {
+        throw new Error(result.detail || "Failed to send Telegram notification");
       }
 
       toast({
