@@ -1,4 +1,4 @@
-
+ "-- Create reviews table
 CREATE TABLE IF NOT EXISTS reviews (
     id TEXT PRIMARY KEY,
     mr_url TEXT NOT NULL,
@@ -58,4 +58,4 @@ ALTER TABLE telegram_actions ENABLE ROW LEVEL SECURITY;
 CREATE POLICY \"Allow all operations on reviews\" ON reviews FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY \"Allow all operations on settings\" ON settings FOR ALL USING (true) WITH CHECK (true);
 CREATE POLICY \"Allow all operations on telegram_actions\" ON telegram_actions FOR ALL USING (true) WITH CHECK (true);
-
+"
