@@ -293,11 +293,8 @@ export default function MergeReview() {
         description: t("review.reviewCompleteDesc").replace("{count}", String(data.issues?.length || 0)),
       });
 
-      // Automatically send email and telegram notifications after review completes
-      await Promise.all([
-        sendEmailNotification(data),
-        sendTelegramNotification(data)
-      ]);
+   // Automatically send telegram notification after review completes
+      await sendTelegramNotification(data);
     } catch (error) {
       console.error("Error reviewing merge request:", error);
       toast({
