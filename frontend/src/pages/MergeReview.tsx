@@ -149,11 +149,32 @@ export default function MergeReview() {
           summary: reviewData.summary,
         },
       });
+// Save review to backend/Supabase
+      const saveResponse = await fetch(`${backendUrl}/api/reviews/save`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reviewPayload),
+      });
 
-      if (error) {
-        throw new Error(error.message || "Failed to send email notification");
+      if (!saveResponse.ok) {
+        throw new Error('Failed to save review');
       }
 
+      const savedData = await saveResponse.json();
+      
+      // Send Telegram notification through backend
+      const telegramResponse = await fetch(`${backendUrl}/api/telegram/send-notification`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(reviewPayload.review_data),
+      });
+
+      if (!telegramResponse.ok) {
+        throw new Error('Failed to send Telegram notification');
       toast({
         title: t("review.emailSent"),
         description: t("review.emailSentDesc"),
@@ -175,40 +196,41 @@ export default function MergeReview() {
     try {
       const backendUrl = import.meta.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL;
       
-      const response = await fetch(`${backendUrl}/api/send-telegram-notification`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          mrTitle: reviewData.mrTitle,
-          mrUrl: mrUrl,
+      // First save the review to Supabase through backend
+      const reviewPayload = {
+        review_data: {
+          id: `${Date.now()}-${mrUrl}`,
+          mr_url: mrUrl,
+          mr_title: reviewData.mrTitle,
           author: reviewData.author,
-          filesChanged: reviewData.filesChanged,
-          linesAdded: reviewData.linesAdded,
-          linesRemoved: reviewData.linesRemoved,
-          reviewTime: reviewData.reviewTime,
+           files_changed: reviewData.filesChanged,
+          lines_added: reviewData.linesAdded,
+          lines_removed: reviewData.linesRemoved,
+          review_time: reviewData.reviewTime,
           status: reviewData.status,
           issues: reviewData.issues,
           summary: reviewData.summary,
-        }),
-      });
+          reviewed_at: new Date().toISOString(),
+          gitlab_token: gitlabToken || accessToken,
+        }
+      };
+
        const result = await response.json();
 
       if (!response.ok) {
         throw new Error(result.detail || "Failed to send Telegram notification");
       }
 
-      toast({
-        title: "Telegram notification sent",
-        description: "Review summary has been sent to your Telegram group.",
+     toast({
+        title: \"Telegram notification sent\",
+        description: \"Review summary has been sent to your Telegram group.\",
       });
     } catch (error) {
-      console.error("Error sending Telegram notification:", error);
+      console.error(\"Error sending Telegram notification:\", error);
       toast({
-        title: "Telegram notification failed",
-        description: error instanceof Error ? error.message : "An unexpected error occurred",
-        variant: "destructive",
+        title: \"Telegram notification failed\",
+        description: error instanceof Error ? error.message : \"An unexpected error occurred\",
+        variant: \"destructive\",
       });
     } finally {
       setIsSendingTelegram(false);
