@@ -51,11 +51,12 @@ class TelegramService:
             f"",
             f"📈 *Changes:*",
             f"  • Files Changed: {review.files_changed}",
-            f"  • Lines Added: +{review.lines_added}",
-            f"  • Lines Removed: -{review.lines_removed}",
+             f"  • Lines Added: \+{review.lines_added}\",
+            f"  • Lines Removed: \-{review.lines_removed}\",
             f"",
             f"📝 *Summary:*",
             f"{review.summary}",
+             f"{self._escape_markdown(review.summary)}",
             f"",
         ]
         
