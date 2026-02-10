@@ -8,6 +8,8 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from \"@/components/ui/alert\";
+
 import { 
   Settings as SettingsIcon, 
   Key, 
@@ -17,7 +19,9 @@ import {
   CheckCircle2,
   Eye,
   EyeOff,
-  Loader2
+  Loader2,
+   AlertTriangle,
+  Info
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useTokenStorage } from "@/hooks/useTokenStorage";
