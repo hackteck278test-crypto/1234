@@ -157,6 +157,10 @@ async def save_review(request: SaveReviewRequest):
     try:
         supabase = get_supabase()
         review_dict = request.review_data.dict()
+
+        # Convert datetime objects to ISO strings
+        if 'reviewed_at' in review_dict and isinstance(review_dict['reviewed_at'], datetime):
+            review_dict['reviewed_at'] = review_dict['reviewed_at'].isoformat()
         
         # Convert issues to dict format
         review_dict['issues'] = [issue.dict() if hasattr(issue, 'dict') else issue 
