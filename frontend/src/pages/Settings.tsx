@@ -8,32 +8,31 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from \"@/components/ui/alert\";
-
-import { 
-  Settings as SettingsIcon, 
-  Key, 
-  GitBranch, 
-  Bell, 
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Settings as SettingsIcon,
+  Key,
+  GitBranch,
+  Bell,
   Shield,
   CheckCircle2,
   Eye,
   EyeOff,
   Loader2,
-   AlertTriangle,
+  AlertTriangle,
   Info
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useTokenStorage } from "@/hooks/useTokenStorage";
 
 export default function Settings() {
-  const { 
-    githubToken, 
-    gitlabToken, 
-    setGithubToken, 
-    setGitlabToken 
+  const {
+    githubToken,
+    gitlabToken,
+    setGithubToken,
+    setGitlabToken
   } = useTokenStorage();
-  
+
   const [localGitlabToken, setLocalGitlabToken] = useState("");
   const [localGithubToken, setLocalGithubToken] = useState("");
   const [showGitlabToken, setShowGitlabToken] = useState(false);
@@ -49,6 +48,7 @@ export default function Settings() {
     telegram: true,
     inApp: true,
   });
+
   const { toast } = useToast();
 
   // Initialize local tokens from stored tokens
@@ -72,13 +72,11 @@ export default function Settings() {
       });
       return;
     }
-
     setVerifyingGitlab(true);
     try {
       const response = await fetch("https://gitlab.com/api/v4/user", {
         headers: { "PRIVATE-TOKEN": localGitlabToken },
       });
-
       if (response.ok) {
         const user = await response.json();
         setGitlabToken(localGitlabToken);
@@ -111,16 +109,14 @@ export default function Settings() {
       });
       return;
     }
-
     setVerifyingGithub(true);
     try {
       const response = await fetch("https://api.github.com/user", {
-        headers: { 
+        headers: {
           "Authorization": `Bearer ${localGithubToken}`,
           "Accept": "application/vnd.github.v3+json",
         },
       });
-
       if (response.ok) {
         const user = await response.json();
         setGithubToken(localGithubToken);
@@ -203,14 +199,15 @@ export default function Settings() {
                     <strong>Required Token Scopes:</strong>
                     <ul className="mt-2 ml-4 list-disc space-y-1 text-sm">
                       <li><code className="text-primary">api</code> - Full API access (required for approve/merge)</li>
-                      <li><code className="text-primary\">read_repository</code> - Read repository content</li>
-                      <li><code className="text-primary\">write_repository</code> - Write to repository (required for merge)</li>
+                      <li><code className="text-primary">read_repository</code> - Read repository content</li>
+                      <li><code className="text-primary">write_repository</code> - Write to repository (required for merge)</li>
                     </ul>
                     <p className="mt-2 text-xs text-muted-foreground">
                       Create token at: GitLab → User Settings → Access Tokens → Add new token
                     </p>
                   </AlertDescription>
                 </Alert>
+
                 <div className="space-y-2">
                   <Label htmlFor="gitlab-token">Personal Access Token</Label>
                   <div className="flex gap-2">
@@ -233,15 +230,11 @@ export default function Settings() {
                         className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
                         onClick={() => setShowGitlabToken(!showGitlabToken)}
                       >
-                        {showGitlabToken ? (
-                          <EyeOff className="h-4 w-4" />
-                        ) : (
-                          <Eye className="h-4 w-4" />
-                        )}
+                        {showGitlabToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
                     </div>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       onClick={verifyGitlabToken}
                       disabled={verifyingGitlab}
                     >
@@ -301,15 +294,11 @@ export default function Settings() {
                         className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
                         onClick={() => setShowGithubToken(!showGithubToken)}
                       >
-                        {showGithubToken ? (
-                          <EyeOff className="h-4 w-4" />
-                        ) : (
-                          <Eye className="h-4 w-4" />
-                        )}
+                        {showGithubToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       </Button>
                     </div>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       onClick={verifyGithubToken}
                       disabled={verifyingGithub}
                     >
@@ -364,10 +353,9 @@ export default function Settings() {
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground">
-                    {reviewMode === "warning" 
+                    {reviewMode === "warning"
                       ? "Issues will be reported but won't block the merge request."
-                      : "Critical issues will cause the CI job to fail."
-                    }
+                      : "Critical issues will cause the CI job to fail."}
                   </p>
                 </div>
 
@@ -431,7 +419,8 @@ export default function Settings() {
                     </ul>
                   </AlertDescription>
                 </Alert>
-                <div className="p-4 rounded-lg bg-secondary 50 border border-border">
+
+                <div className="p-4 rounded-lg bg-secondary/50 border border-border">
                   <p className="text-sm font-medium mb-2">How it works:</p>
                   <ol className="text-sm text-muted-foreground space-y-1 ml-4 list-decimal">
                     <li>After each MR review, a detailed notification is sent to your Telegram group</li>
@@ -443,6 +432,7 @@ export default function Settings() {
                 </div>
               </CardContent>
             </Card>
+
             <Card glow>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -462,13 +452,14 @@ export default function Settings() {
                         Receive review summaries via email
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       checked={notifications.email}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={(checked) =>
                         setNotifications({ ...notifications, email: checked })
                       }
                     />
                   </div>
+
                   <div className="flex items-center justify-between rounded-lg border border-border p-3">
                     <div>
                       <p className="text-sm font-medium">Slack notifications</p>
@@ -476,27 +467,32 @@ export default function Settings() {
                         Post review results to a Slack channel
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       checked={notifications.slack}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={(checked) =>
                         setNotifications({ ...notifications, slack: checked })
                       }
                     />
                   </div>
-                  <div className="flex items-center justify-between rounded-lg border border-border p-3">
+
+                  <div className="flex items-center justify-between rounded-lg border border-success/20 bg-success/5 p-3">
                     <div>
-                      <p className="text-sm font-medium">Telegram notifications</p>
-                      <p className="text-xs text-muted-foreground">
-                        Send review results to your Telegram group
+                      <p className="text-sm font-medium flex items-center gap-2">
+                        Telegram notifications
+                        <Badge className="bg-success/10 text-success border-success/20">
+                          <CheckCircle2 className="h-3 w-3 mr-1" />
+                          Active
+                        </Badge>
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       checked={notifications.telegram}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={(checked) =>
                         setNotifications({ ...notifications, telegram: checked })
                       }
                     />
                   </div>
+
                   <div className="flex items-center justify-between rounded-lg border border-border p-3">
                     <div>
                       <p className="text-sm font-medium">In-app notifications</p>
@@ -504,9 +500,9 @@ export default function Settings() {
                         Show notifications in the dashboard
                       </p>
                     </div>
-                    <Switch 
+                    <Switch
                       checked={notifications.inApp}
-                      onCheckedChange={(checked) => 
+                      onCheckedChange={(checked) =>
                         setNotifications({ ...notifications, inApp: checked })
                       }
                     />
