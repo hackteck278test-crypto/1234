@@ -196,6 +196,21 @@ export default function Settings() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
+                {/* Important Instructions Alert */}
+                <Alert>
+                  <Info className="h-4 w-4" />
+                  <AlertDescription>
+                    <strong>Required Token Scopes:</strong>
+                    <ul className="mt-2 ml-4 list-disc space-y-1 text-sm">
+                      <li><code className="text-primary">api</code> - Full API access (required for approve/merge)</li>
+                      <li><code className="text-primary\">read_repository</code> - Read repository content</li>
+                      <li><code className="text-primary\">write_repository</code> - Write to repository (required for merge)</li>
+                    </ul>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      Create token at: GitLab → User Settings → Access Tokens → Add new token
+                    </p>
+                  </AlertDescription>
+                </Alert>
                 <div className="space-y-2">
                   <Label htmlFor="gitlab-token">Personal Access Token</Label>
                   <div className="flex gap-2">
@@ -393,6 +408,41 @@ export default function Settings() {
           </TabsContent>
 
           <TabsContent value="notifications" className="space-y-6">
+            <Card glow>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="h-5 w-5 text-primary" />
+                  Telegram Configuration
+                </CardTitle>
+                <CardDescription>
+                  Your Telegram bot is configured and ready to send notifications with approve/decline buttons.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Alert>
+                  <CheckCircle2 className="h-4 w-4 text-success" />
+                  <AlertDescription>
+                    <strong>Bot Status: Connected</strong>
+                    <ul className="mt-2 ml-4 space-y-1 text-sm">
+                      <li>• Bot Token: Configured</li>
+                      <li>• Chat ID: -1003841579486</li>
+                      <li>• Approve/Merge buttons: Enabled</li>
+                      <li>• Decline button: Enabled</li>
+                    </ul>
+                  </AlertDescription>
+                </Alert>
+                <div className="p-4 rounded-lg bg-secondary 50 border border-border">
+                  <p className="text-sm font-medium mb-2">How it works:</p>
+                  <ol className="text-sm text-muted-foreground space-y-1 ml-4 list-decimal">
+                    <li>After each MR review, a detailed notification is sent to your Telegram group</li>
+                    <li>Notification includes all issues, errors, warnings, and summary</li>
+                    <li>Click "Approve & Merge" to approve and merge the MR directly in GitLab</li>
+                    <li>Click "Decline" to close the MR in GitLab</li>
+                    <li>Actions are executed instantly using your GitLab token</li>
+                  </ol>
+                </div>
+              </CardContent>
+            </Card>
             <Card glow>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
